@@ -1,9 +1,8 @@
-FROM public.ecr.aws/lambda/python:3.9
+FROM public.ecr.aws/lambda/python:3.8
 
-WORKDIR /app
+COPY app.py /var/task/
 
-COPY . /app
+COPY requirements.txt ./
+RUN pip install -r requirements.txt
 
-RUN pip install --no-cache-dir -r requirements.txt
-
-CMD ["lambda_handler.handler"]
+CMD [ "app.lambda_handler" ]
