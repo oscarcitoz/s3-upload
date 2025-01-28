@@ -1,12 +1,9 @@
-# Imagen base oficial de Python
 FROM public.ecr.aws/lambda/python:3.9
 
-# Copiar archivos
-COPY app.py lambda_handler.py .
-COPY requirements.txt .
+WORKDIR /app
 
-# Instalar dependencias
-RUN pip install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
+COPY . /app
 
-# Configurar el handler para Lambda
+RUN pip install --no-cache-dir -r requirements.txt
+
 CMD ["lambda_handler.handler"]
