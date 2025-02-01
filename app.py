@@ -87,11 +87,17 @@ def upload_to_s3(file_content, folder, filename):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error uploading file: {str(e)}")
 
+def modificate_string(file):
+    if "base64," in file:
+        updated_file = file.split("base64,")[1]
+        return updated_file
+    return file
 
 def lambda_handler(event, context):
     try:
         body = json.loads(event['body'])
         file_upload = FileUpload(**body)
+        file_upload.file = modificate_string(file_upload.file)
         file_content = base64.b64decode(file_upload.file)
         extension = get_extension(file_content)
         file_upload.filename = file_upload.filename + "." + extension
