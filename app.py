@@ -5,6 +5,7 @@ import base64
 import os
 from pydantic import BaseModel
 import json
+import magic
 
 
 session = boto3.Session(aws_access_key_id=os.environ.get("ACCESS_KEY"),
