@@ -27,6 +27,24 @@ def allowed_file(filename):
     ext = filename.rsplit('.', 1)[-1].lower()
     return ext in ALLOWED_EXTENSIONS
 
+def get_extension(file_content):
+    file_type = magic.Magic(mime=True)
+    mime_type = file_type.from_buffer(file_content)
+    
+    mime_map = {
+        "image/jpeg": "jpg",
+        "image/png": "png",
+        "image/gif": "gif",
+        "image/bmp": "bmp",
+        "application/pdf": "pdf",
+        "text/plain": "txt",
+        "text/html": "html",
+        "application/json": "json",
+        "image/webp": "webp",  
+    }
+
+    return mime_map.get(mime_type, "bin")
+
 
 def get_content_type(filename):
     extension = filename.rsplit('.', 1)[-1].lower()
@@ -73,6 +91,9 @@ def lambda_handler(event, context):
         body = json.loads(event['body'])
         file_upload = FileUpload(**body)
         file_content = base64.b64decode(file_upload.file)
+        extension = get_extension(file_content)
+        file_upload.filename = file_upload.filename + "." + extension
+
         if not allowed_file(file_upload.filename):
             return {
                 "statusCode": 400,
