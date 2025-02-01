@@ -7,7 +7,6 @@ from pydantic import BaseModel
 import json
 import magic
 
-
 session = boto3.Session(aws_access_key_id=os.environ.get("ACCESS_KEY"),
                         aws_secret_access_key=os.environ.get("SECRET_KEY"))
 s3_client = session.client("s3")
@@ -28,10 +27,11 @@ def allowed_file(filename):
     ext = filename.rsplit('.', 1)[-1].lower()
     return ext in ALLOWED_EXTENSIONS
 
+
 def get_extension(file_content):
     file_type = magic.Magic(mime=True)
     mime_type = file_type.from_buffer(file_content)
-    
+
     mime_map = {
         "image/jpeg": "jpg",
         "image/png": "png",
@@ -41,7 +41,8 @@ def get_extension(file_content):
         "text/plain": "txt",
         "text/html": "html",
         "application/json": "json",
-        "image/webp": "webp",  
+        "image/webp": "webp",
+        "application/octet-stream": "png"
     }
 
     return mime_map.get(mime_type, "bin")
